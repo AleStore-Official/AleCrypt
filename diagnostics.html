@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>AleCrypt – Diagnostica</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"></script>
+</head>
+<body>
+  <button id="themeToggle" title="Tema">🌙</button>
+  <div class="centered" style="text-align: left;">
+    <h2>🧭 Diagnostica Supabase</h2>
+    <p>Verifica lo stato della connessione, ambiente, e accesso ai dati.</p>
+
+    <button onclick="verificaConnessione()">🔌 Test connessione</button>
+    <button onclick="ambiente()">🌍 Info ambiente</button>
+    <button onclick="caricaDebug()">🗂️ Test lettura messaggi</button>
+    <pre id="output" style="margin-top:1em;">🧪 Output tecnico...</pre>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+    const supabase = createClient(
+      "https://anfgsrtcbpvaihrtqnlv.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFuZmdzcnRjYnB2YWlocnRxbmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NTI1NTIsImV4cCI6MjA2NzMyODU1Mn0.4tNAZ0RXc-zFFCNT8Wm6Bdo3TkhLc0Up90KxAdUhYss"
+    );
+
+    const out = document.getElementById("output");
+
+    async function verificaConnessione() {
+      const { data, error } = await supabase.from("utenti").select("*").limit(1);
+      if (error) out.textContent = "❌ Connessione fallita:\n" + error.message;
+      else out.textContent = "✅ Connessione riuscita:\n" + JSON.stringify(data, null, 2);
+    }
+
+    function ambiente() {
+      const info = {
+        userAgent: navigator.userAgent,
+        lingua: navigator.language,
+        accesso: sessionStorage.getItem("alecrypt-accesso"),
+        tema: localStorage.getItem("alecrypt-theme"),
+        userId: localStorage.getItem("userId"),
+        ruolo: localStorage.getItem("alecrypt-ruolo")
+      };
+      out.textContent = "🌍 Informazioni ambiente:\n\n" + JSON.stringify(info, null, 2);
+    }
+
+    async function caricaDebug() {
+      const { data, error } = await supabase.from("messaggi").select("*").limit(5);
+      if (error) out.textContent = "❌ Errore messaggi:\n" + error.message;
+      else out.textContent = "🗂️ Messaggi debug:\n\n" + JSON.stringify(data, null, 2);
+    }
+
+    window.verificaConnessione = verificaConnessione;
+    window.ambiente = ambiente;
+    window.caricaDebug = caricaDebug;
+
+    const toggle = document.getElementById("themeToggle");
+    if (localStorage.getItem("alecrypt-theme") === "dark") {
+      document.body.classList.add("dark");
+      toggle.innerText = "☀️";
+    }
+    toggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      const t = document.body.classList.contains("dark") ? "dark" : "light";
+      localStorage.setItem("alecrypt-theme", t);
+      toggle.innerText = t === "dark" ? "☀️" : "🌙";
+    });
+  </script>
+</body>
+</html>

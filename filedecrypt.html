@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>AleCrypt – Decripta</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+  <script>
+    // 🔐 Protezione gate
+    if (sessionStorage.getItem("alecrypt-accesso") !== "ok") {
+      location.href = "gate.html";
+    }
+  </script>
+
+  <button id="themeToggle" title="Tema">🌙</button>
+  <div class="centered">
+    <h2>🔓 Decripta un messaggio</h2>
+
+    <input type="text" id="keyInput" placeholder="Inserisci la chiave" />
+    <button onclick="decrypt()">🧪 Decripta</button>
+
+    <pre id="resultBox">📥 Qui apparirà il contenuto decriptato...</pre>
+    <button id="copyResultBtn" style="display:none;">📋 Copia risultato</button>
+  </div>
+
+  <script type="module">
+    const toggle = document.getElementById("themeToggle");
+    if (localStorage.getItem("alecrypt-theme") === "dark") {
+      document.body.classList.add("dark");
+      toggle.innerText = "☀️";
+    }
+    toggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      const tema = document.body.classList.contains("dark") ? "dark" : "light";
+      localStorage.setItem("alecrypt-theme", tema);
+      toggle.innerText = tema === "dark" ? "☀️" : "🌙";
+    });
+
+    function decrypt() {
+      const key = document.getElementById("keyInput").value.trim();
+      const resultBox = document.getElementById("resultBox");
+      const copyBtn = document.getElementById("copyResultBtn");
+
+      if (!key || !localStorage.getItem(key)) {
+        alert("⚠️ Chiave non valida o non trovata.");
+        return;
+      }
+
+      try {
+        const payload = JSON.parse(localStorage.getItem(key));
+        if (payload.expires && Date.now() > payload.expires) {
+          resultBox.textContent = "⛔ Il messaggio è scaduto.";
+          return;
+        }
+
+        const bytes = CryptoJS.AES.decrypt(payload.cipher, key);
+        const original = bytes.toString(CryptoJS.enc.Utf8);
+        resultBox.textContent = "✅ Contenuto decriptato:\n\n" + original;
+        copyBtn.style.display = "inline-block";
+        copyBtn.innerText = "📋 Copia risultato";
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(original).then(() => {
+            copyBtn.innerText = "✅ Copiato!";
+            setTimeout(() => (copyBtn.innerText = "📋 Copia risultato"), 2000);
+          });
+        };
+      } catch (e) {
+        resultBox.textContent = "❌ Errore durante la decriptazione.";
+      }
+    }
+
+    window.decrypt = decrypt;
+  </script>
+</body>
+</html>

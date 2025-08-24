@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>AleCrypt – Documentazione</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <script>
+    if (sessionStorage.getItem("alecrypt-accesso") !== "ok") {
+      location.href = "gate.html";
+    }
+  </script>
+
+  <button id="themeToggle" title="Tema">🌙</button>
+  <div class="centered" style="text-align: left; line-height: 1.6;">
+    <h2>📖 Documentazione AleCrypt</h2>
+
+    <h3>🛠️ Funzioni principali</h3>
+    <ul>
+      <li>🔐 <strong>Cifratura AES:</strong> CryptoJS AES256 lato client</li>
+      <li>📦 <strong>Storage:</strong> locale + Supabase via `upsert`</li>
+      <li>⏱️ <strong>Scadenza:</strong> impostabile via dropdown</li>
+      <li>🧩 <strong>Accesso:</strong> puzzle verificatore in `gate.html`</li>
+      <li>🖥️ <strong>Compatibilità:</strong> completamente client-side</li>
+    </ul>
+
+    <h3>📦 Flusso utente</h3>
+    <ol>
+      <li>Registrazione via <code>register.html</code></li>
+      <li>Accesso solo se verifica riuscita (<code>gate.html</code>)</li>
+      <li>Cifratura messaggio con AES e chiave generata</li>
+      <li>Salvataggio in locale e opzionalmente su Supabase</li>
+      <li>Recupero e decriptazione via <code>filedecrypt.html</code></li>
+    </ol>
+
+    <h3>💧 Aspetto grafico</h3>
+    <ul>
+      <li>🌈 <strong>Sfondo:</strong> gradienti animati</li>
+      <li>🧊 <strong>Pulsanti:</strong> stile liquido glass leggibile</li>
+      <li>🌙 <strong>Tema:</strong> toggle tema chiaro/scuro memorizzato</li>
+    </ul>
+
+    <p style="margin-top: 2em;">
+      ✍️ AleCrypt non utilizza database server-side per decifratura.  
+      La privacy è mantenuta perché la chiave non viene mai inviata online.
+    </p>
+
+    <button onclick="location.href='index.html'">🏠 Torna alla Home</button>
+  </div>
+
+  <script>
+    const toggle = document.getElementById("themeToggle");
+    if (localStorage.getItem("alecrypt-theme") === "dark") {
+      document.body.classList.add("dark");
+      toggle.innerText = "☀️";
+    }
+    toggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      const tema = document.body.classList.contains("dark") ? "dark" : "light";
+      localStorage.setItem("alecrypt-theme", tema);
+      toggle.innerText = tema === "dark" ? "☀️" : "🌙";
+    });
+  </script>
+</body>
+</html>

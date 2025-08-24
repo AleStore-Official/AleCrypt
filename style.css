@@ -1,0 +1,157 @@
+:root {
+  --font-main: 'Segoe UI', sans-serif;
+  --radius: 14px;
+  --transition: 0.3s ease;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  background: linear-gradient(270deg, #fbc2eb, #a6c1ee, #d4fc79);
+  background-size: 600% 600%;
+  animation: gradientFlow 60s ease infinite;
+  color: #222;
+  min-height: 100vh;
+  caret-color: currentColor;
+  transition: background 0.4s, color 0.4s;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+body.dark {
+  background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
+  color: #eee;
+}
+
+/* Contenitore principale */
+.centered {
+  max-width: 680px;
+  margin: 3em auto;
+  text-align: center;
+  padding: 2em;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+body.dark .centered {
+  background: rgba(20, 20, 20, 0.9);
+}
+
+/* Input, select, textarea */
+textarea, input, select {
+  width: 90%;
+  padding: 12px;
+  margin: 1em 0;
+  font-size: 16px;
+  border-radius: var(--radius);
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  color: #111;
+}
+
+body.dark textarea,
+body.dark input,
+body.dark select {
+  background: #1f1f1f;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+}
+
+/* Pulsanti liquidi glass */
+button,
+.option-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 12px 24px;
+  margin: 0.5em auto;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease, color 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  color: #222;
+}
+
+button:hover,
+.option-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.03);
+  color: #000;
+}
+
+body.dark button,
+body.dark .option-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #eee;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+}
+
+body.dark button:hover,
+body.dark .option-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.03);
+  color: #fff;
+}
+
+/* Pulsante tema */
+#themeToggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+  border-radius: 50%;
+  background-color: rgba(255,255,255,0.9);
+  color: #000;
+  border: none;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark #themeToggle {
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+}
+
+/* Output criptato, decifrato */
+pre {
+  background: #f4f4f4;
+  padding: 1em;
+  border-radius: 12px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+}
+
+body.dark pre {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+/* Info scadenza e messaggi */
+#expiryInfo, #expiryData {
+  font-size: 0.95em;
+  font-weight: bold;
+  margin-top: 0.5em;
+}
