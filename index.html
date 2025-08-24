@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>AleCrypt – Home</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <button id="themeToggle" title="Tema">🌙</button>
+  <div class="centered">
+    <h2>🛡️ Benvenuto in AleCrypt</h2>
+    <p>Suite di strumenti per la cifratura e gestione privata dei tuoi messaggi.</p>
+    <button onclick="location.href='filecrypt.html'">🧪 Cifra un Messaggio</button>
+    <button onclick="location.href='filedecrypt.html'">🔓 Decifra un Messaggio</button>
+    <button onclick="location.href='README.html'">📖 Documentazione</button>
+  </div>
+
+  <script>
+    // 🔐 Verifica accesso utente
+    if (sessionStorage.getItem("alecrypt-accesso") !== "ok") {
+      location.href = "gate.html";
+    }
+
+    // 🌗 Tema toggle
+    const toggle = document.getElementById("themeToggle");
+    if (localStorage.getItem("alecrypt-theme") === "dark") {
+      document.body.classList.add("dark");
+      toggle.textContent = "☀️";
+    }
+    toggle.onclick = () => {
+      document.body.classList.toggle("dark");
+      const tema = document.body.classList.contains("dark") ? "dark" : "light";
+      localStorage.setItem("alecrypt-theme", tema);
+      toggle.textContent = tema === "dark" ? "☀️" : "🌙";
+    };
+  </script>
+</body>
+</html>
