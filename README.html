@@ -1,66 +1,86 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <title>AleCrypt – Documentazione</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <script>
-    if (sessionStorage.getItem("alecrypt-accesso") !== "ok") {
-      location.href = "gate.html";
-    }
-  </script>
+# 🌐 AleStore Official – Sito Web Personale
 
-  <button id="themeToggle" title="Tema">🌙</button>
-  <div class="centered" style="text-align: left; line-height: 1.6;">
-    <h2>📖 Documentazione AleCrypt</h2>
+Ciao! 👋 Questo è il repository del mio sito web personale, pubblicato tramite GitHub Pages.  
+Non è un progetto commerciale, né una piattaforma pensata per gestire dati sensibili o operazioni critiche.  
+È semplicemente il mio spazio online dove sperimento, pubblico contenuti e tengo traccia di ciò che mi piace costruire.
 
-    <h3>🛠️ Funzioni principali</h3>
-    <ul>
-      <li>🔐 <strong>Cifratura AES:</strong> CryptoJS AES256 lato client</li>
-      <li>📦 <strong>Storage:</strong> locale + Supabase via `upsert`</li>
-      <li>⏱️ <strong>Scadenza:</strong> impostabile via dropdown</li>
-      <li>🧩 <strong>Accesso:</strong> puzzle verificatore in `gate.html`</li>
-      <li>🖥️ <strong>Compatibilità:</strong> completamente client-side</li>
-    </ul>
+---
 
-    <h3>📦 Flusso utente</h3>
-    <ol>
-      <li>Registrazione via <code>register.html</code></li>
-      <li>Accesso solo se verifica riuscita (<code>gate.html</code>)</li>
-      <li>Cifratura messaggio con AES e chiave generata</li>
-      <li>Salvataggio in locale e opzionalmente su Supabase</li>
-      <li>Recupero e decriptazione via <code>filedecrypt.html</code></li>
-    </ol>
+## 🧭 Cos'è questo progetto?
 
-    <h3>💧 Aspetto grafico</h3>
-    <ul>
-      <li>🌈 <strong>Sfondo:</strong> gradienti animati</li>
-      <li>🧊 <strong>Pulsanti:</strong> stile liquido glass leggibile</li>
-      <li>🌙 <strong>Tema:</strong> toggle tema chiaro/scuro memorizzato</li>
-    </ul>
+Un sito web statico, semplice e diretto.  
+Lo uso per condividere idee, testare codice, pubblicare documentazione o semplicemente avere una presenza online.  
+Non è pensato per essere un prodotto finito, ma piuttosto un contenitore flessibile che posso aggiornare quando voglio.
 
-    <p style="margin-top: 2em;">
-      ✍️ AleCrypt non utilizza database server-side per decifratura.  
-      La privacy è mantenuta perché la chiave non viene mai inviata online.
-    </p>
+---
 
-    <button onclick="location.href='index.html'">🏠 Torna alla Home</button>
-  </div>
+## 🛠️ Tecnologie utilizzate
 
-  <script>
-    const toggle = document.getElementById("themeToggle");
-    if (localStorage.getItem("alecrypt-theme") === "dark") {
-      document.body.classList.add("dark");
-      toggle.innerText = "☀️";
-    }
-    toggle.addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      const tema = document.body.classList.contains("dark") ? "dark" : "light";
-      localStorage.setItem("alecrypt-theme", tema);
-      toggle.innerText = tema === "dark" ? "☀️" : "🌙";
-    });
-  </script>
-</body>
-</html>
+- **HTML** – per la struttura
+- **CSS** – per lo stile
+- **JavaScript** – per funzionalità dinamiche
+
+---
+
+## 🔐 Sicurezza e responsabilità
+
+Questo sito **non è pensato per gestire dati personali, credenziali, pagamenti o informazioni riservate**.  
+Non ci sono sistemi di autenticazione, database, né protezioni avanzate.  
+È un progetto pubblico e sperimentale, quindi:
+
+> ⚠️ **Usalo a tuo rischio. Non è garantito né supportato per ambienti di produzione o uso professionale.**
+
+---
+
+## 📜 Licenza
+
+Questo progetto è distribuito sotto la **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+
+### ✅ Cosa puoi fare:
+
+- Usare liberamente il codice
+- Modificarlo per adattarlo alle tue esigenze
+- Condividerlo o pubblicarlo, anche in versione modificata
+
+### 📢 Ma solo se:
+
+- Mantieni il riconoscimento dell’autore originale (AleStore Official)
+- Rendi disponibile anche il codice modificato se lo usi pubblicamente (es. su un sito web)
+- Rispetti i termini completi della licenza AGPL v3
+
+### ❌ Cosa non puoi fare:
+
+- Spacciare il codice per tuo senza citare l’autore
+- Usarlo in modo chiuso o proprietario senza rendere pubblica la versione modificata
+- Pretendere garanzie, supporto o sicurezza: **non è un software certificato**
+
+> ℹ️ La licenza AGPL promuove la trasparenza e la condivisione.  
+> Se usi questo progetto, fallo con rispetto e spirito open source.
+
+🔗 [Testo completo della licenza AGPL v3](https://www.gnu.org/licenses/agpl-3.0.html)
+
+---
+
+## 📬 Contatti
+
+Se vuoi scrivermi, segnalare qualcosa o semplicemente fare due chiacchiere:
+
+- 🔗 [GitHub – AleStore-Official](https://github.com/AleStore-Official)
+- 🌍 [Sito web](https://alestore.github.io)
+- 💬 Apri una issue se vuoi lasciare un messaggio pubblico
+
+---
+
+## 🚧 Stato del progetto
+
+Il sito è in continua evoluzione.  
+Non c'è una roadmap precisa, ma ogni tanto aggiungo qualcosa, cambio stile, provo nuove idee.  
+Se ti piace smanettare o sei curioso di vedere come si sviluppa, seguimi pure!
+
+---
+
+## 🙏 Grazie
+
+Grazie per aver visitato il mio repository.  
+Spero che tu possa trovare qualcosa di utile, interessante o semplicemente divertente.  
+E se vuoi usare qualcosa, fallo pure — con rispetto e spirito open source.
