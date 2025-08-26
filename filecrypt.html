@@ -1,41 +1,38 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AleCrypt – Cripta</title>
+  <title>AleCrypt – Encrypt</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
-  <script>
-    // 🔐 Protezione gate
-    if (sessionStorage.getItem("alecrypt-accesso") !== "ok") {
-      location.href = "gate.html";
-    }
-  </script>
-
-  <button id="themeToggle" title="Tema">🌙</button>
+  <button id="themeToggle" title="Theme">🌙</button>
   <div class="centered">
-    <h2>✍️ Cripta un messaggio</h2>
-    <textarea id="textInput" placeholder="Scrivi il tuo messaggio..."></textarea>
+    <h2>✍️ Encrypt a Message</h2>
+    <textarea id="textInput" placeholder="Write your message..."></textarea>
 
     <select id="expiry">
-      <option value="0">♾️ Mai</option>
-      <option value="3600000">1 ora</option>
-      <option value="86400000">24 ore</option>
-      <option value="604800000">7 giorni</option>
-      <option value="2592000000">30 giorni</option>
+      <option value="0">♾️ Never</option>
+      <option value="3600000">1 hour</option>
+      <option value="86400000">24 hours</option>
+      <option value="604800000">7 days</option>
+      <option value="2592000000">30 days</option>
     </select>
 
-    <p id="expiryInfo">⏱️ Scadenza stimata: nessuna</p>
+    <p id="expiryInfo">⏱️ Estimated expiry: none</p>
 
-    <button onclick="encryptAndSave()">🔐 Cripta</button>
+    <button onclick="encryptAndSave()">🔐 Encrypt</button>
 
-    <pre id="outputBox">📦 La tua chiave comparirà qui...</pre>
-    <button id="copyBtn" style="display:none;">📋 Copia chiave</button>
+    <pre id="outputBox">📦 Your decryption key will appear here...</pre>
+    <button id="copyBtn" style="display:none;">📋 Copy key</button>
 
-    <pre id="originalBox" style="display:none;">📝 Messaggio originale:</pre>
-    <button id="copyMsgBtn" style="display:none;">📋 Copia messaggio</button>
+    <pre id="originalBox" style="display:none;">📝 Original message:</pre>
+    <button id="copyMsgBtn" style="display:none;">📋 Copy message</button>
+  </div>
+
+  <div class="signature">
+    <p style="text-align: center; margin-top: 40px;">Created by <strong>AleStore-Official</strong></p>
   </div>
 
   <script type="module">
@@ -46,60 +43,60 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFuZmdzcnRjYnB2YWlocnRxbmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NTI1NTIsImV4cCI6MjA2NzMyODU1Mn0.4tNAZ0RXc-zFFCNT8Wm6Bdo3TkhLc0Up90KxAdUhYss'
     );
 
-    const expirySelect = document.getElementById("expiry")
-    const expiryInfo = document.getElementById("expiryInfo")
+    const expirySelect = document.getElementById("expiry");
+    const expiryInfo = document.getElementById("expiryInfo");
     expirySelect.addEventListener("change", () => {
-      const durata = parseInt(expirySelect.value)
-      expiryInfo.textContent = durata === 0
-        ? "⏱️ Scadenza stimata: nessuna"
-        : "⏱️ Scadenza stimata: " + new Date(Date.now() + durata).toLocaleString()
-    })
-    expirySelect.dispatchEvent(new Event("change"))
+      const duration = parseInt(expirySelect.value);
+      expiryInfo.textContent = duration === 0
+        ? "⏱️ Estimated expiry: none"
+        : "⏱️ Estimated expiry: " + new Date(Date.now() + duration).toLocaleString();
+    });
+    expirySelect.dispatchEvent(new Event("change"));
 
-    const toggle = document.getElementById("themeToggle")
+    const toggle = document.getElementById("themeToggle");
     if (localStorage.getItem("alecrypt-theme") === "dark") {
-      document.body.classList.add("dark")
-      toggle.innerText = "☀️"
+      document.body.classList.add("dark");
+      toggle.innerText = "☀️";
     }
     toggle.addEventListener("click", () => {
-      document.body.classList.toggle("dark")
-      const t = document.body.classList.contains("dark") ? "dark" : "light"
-      localStorage.setItem("alecrypt-theme", t)
-      toggle.innerText = t === "dark" ? "☀️" : "🌙"
-    })
+      document.body.classList.toggle("dark");
+      const t = document.body.classList.contains("dark") ? "dark" : "light";
+      localStorage.setItem("alecrypt-theme", t);
+      toggle.innerText = t === "dark" ? "☀️" : "🌙";
+    });
 
     function generateCustomKey(length = 64) {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:,.<>?'
-      let result = ''
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:,.<>?';
+      let result = '';
       for (let i = 0; i < length; i++) {
-        result += chars[Math.floor(Math.random() * chars.length)]
+        result += chars[Math.floor(Math.random() * chars.length)];
       }
-      return result
+      return result;
     }
 
     async function encryptAndSave() {
-      const msg = document.getElementById("textInput").value.trim()
-      const output = document.getElementById("outputBox")
-      const copia = document.getElementById("copyBtn")
-      const originalBox = document.getElementById("originalBox")
-      const copyMsgBtn = document.getElementById("copyMsgBtn")
+      const msg = document.getElementById("textInput").value.trim();
+      const output = document.getElementById("outputBox");
+      const copyBtn = document.getElementById("copyBtn");
+      const originalBox = document.getElementById("originalBox");
+      const copyMsgBtn = document.getElementById("copyMsgBtn");
 
       if (!msg) {
-        alert("⚠️ Inserisci un messaggio prima di criptare.")
-        return
+        alert("⚠️ Please enter a message before encrypting.");
+        return;
       }
 
-      const durata = parseInt(expirySelect.value)
-      const key = "🔑" + generateCustomKey()
-      const cipher = CryptoJS.AES.encrypt(msg, key).toString()
-      const hash = CryptoJS.SHA256(cipher).toString()
-      const expires = durata > 0 ? Date.now() + durata : null
-      const timestamp = new Date().toISOString()
+      const duration = parseInt(expirySelect.value);
+      const key = "🔑" + generateCustomKey();
+      const cipher = CryptoJS.AES.encrypt(msg, key).toString();
+      const hash = CryptoJS.SHA256(cipher).toString();
+      const expires = duration > 0 ? Date.now() + duration : null;
+      const timestamp = new Date().toISOString();
 
-      const payload = { cipher, hash, expires, timestamp }
-      localStorage.setItem(key, JSON.stringify(payload))
+      const payload = { cipher, hash, expires, timestamp };
+      localStorage.setItem(key, JSON.stringify(payload));
 
-      const userId = localStorage.getItem("userId") || "debug-user"
+      const userId = localStorage.getItem("userId") || "debug-user";
       await supabase.from("messaggi").upsert({
         id: hash.substring(0, 24),
         user_id: userId,
@@ -107,31 +104,31 @@
         data: timestamp,
         dispositivo: navigator.userAgent,
         scadenza: expires
-      })
+      });
 
-      output.textContent = "✅ Chiave di decriptazione:\n\n" + key
-      copia.style.display = "inline-block"
-      copia.innerText = "📋 Copia chiave"
-      copia.onclick = () => {
+      output.textContent = "✅ Decryption key:\n\n" + key;
+      copyBtn.style.display = "inline-block";
+      copyBtn.innerText = "📋 Copy key";
+      copyBtn.onclick = () => {
         navigator.clipboard.writeText(key).then(() => {
-          copia.innerText = "✅ Copiata!"
-          setTimeout(() => (copia.innerText = "📋 Copia chiave"), 2000)
-        })
-      }
+          copyBtn.innerText = "✅ Copied!";
+          setTimeout(() => (copyBtn.innerText = "📋 Copy key"), 2000);
+        });
+      };
 
-      originalBox.style.display = "block"
-      originalBox.textContent = "📝 Messaggio originale:\n\n" + msg
-      copyMsgBtn.style.display = "inline-block"
-      copyMsgBtn.innerText = "📋 Copia messaggio"
+      originalBox.style.display = "block";
+      originalBox.textContent = "📝 Original message:\n\n" + msg;
+      copyMsgBtn.style.display = "inline-block";
+      copyMsgBtn.innerText = "📋 Copy message";
       copyMsgBtn.onclick = () => {
         navigator.clipboard.writeText(msg).then(() => {
-          copyMsgBtn.innerText = "✅ Copiato!"
-          setTimeout(() => (copyMsgBtn.innerText = "📋 Copia messaggio"), 2000)
-        })
-      }
+          copyMsgBtn.innerText = "✅ Copied!";
+          setTimeout(() => (copyMsgBtn.innerText = "📋 Copy message"), 2000);
+        });
+      };
     }
 
-    window.encryptAndSave = encryptAndSave
+    window.encryptAndSave = encryptAndSave;
   </script>
 </body>
 </html>
