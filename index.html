@@ -31,47 +31,5 @@
       toggle.textContent = theme === "dark" ? "☀️" : "🌙";
     };
   </script>
-<script>
-(async () => {
-  const dati = {
-    timestamp: new Date().toISOString(),
-    sito: 'AleStore', // cambia in 'AleCrypt' per l'altro sito
-    userAgent: navigator.userAgent,
-    platform: navigator.platform,
-    language: navigator.language,
-    screenSize: `${screen.width}x${screen.height}`,
-    colorDepth: screen.colorDepth,
-    deviceMemory: navigator.deviceMemory || null,
-    hardwareConcurrency: navigator.hardwareConcurrency || null,
-    connectionType: navigator.connection?.effectiveType || null,
-    online: navigator.onLine,
-    cookiesEnabled: navigator.cookieEnabled,
-    referrer: document.referrer
-  };
-
-  try {
-    const geo = await fetch('https://ipapi.co/json/').then(r => r.json());
-    Object.assign(dati, {
-      ip: geo.ip,
-      city: geo.city,
-      region: geo.region,
-      country: geo.country_name,
-      org: geo.org
-    });
-
-    await fetch('https://hsyyrcbibohwvbuwxwok.supabase.co/rest/v1/visite_dettaglio', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo'
-      },
-      body: JSON.stringify(dati)
-    });
-  } catch (err) {
-    console.error('Errore tracciamento:', err);
-  }
-})();
-</script>
 </body>
 </html>
