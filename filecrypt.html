@@ -35,14 +35,7 @@
     <p style="text-align: center; margin-top: 40px;">Created by <strong>AleStore-Official</strong></p>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-    const supabase = createClient(
-      'https://anfgsrtcbpvaihrtqnlv.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFuZmdzcnRjYnB2YWlocnRxbmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NTI1NTIsImV4cCI6MjA2NzMyODU1Mn0.4tNAZ0RXc-zFFCNT8Wm6Bdo3TkhLc0Up90KxAdUhYss'
-    );
-
+  <script>
     const expirySelect = document.getElementById("expiry");
     const expiryInfo = document.getElementById("expiryInfo");
     expirySelect.addEventListener("change", () => {
@@ -74,7 +67,7 @@
       return result;
     }
 
-    async function encryptAndSave() {
+    function encryptAndSave() {
       const msg = document.getElementById("textInput").value.trim();
       const output = document.getElementById("outputBox");
       const copyBtn = document.getElementById("copyBtn");
@@ -95,16 +88,6 @@
 
       const payload = { cipher, hash, expires, timestamp };
       localStorage.setItem(key, JSON.stringify(payload));
-
-      const userId = localStorage.getItem("userId") || "debug-user";
-      await supabase.from("messaggi").upsert({
-        id: hash.substring(0, 24),
-        user_id: userId,
-        contenuto: cipher,
-        data: timestamp,
-        dispositivo: navigator.userAgent,
-        scadenza: expires
-      });
 
       output.textContent = "✅ Decryption key:\n\n" + key;
       copyBtn.style.display = "inline-block";
