@@ -35,6 +35,11 @@
     <p style="text-align: center; margin-top: 40px;">Created by <strong>AleStore-Official</strong></p>
   </div>
 
+  <script src="script.js"></script>
+  <script type="module">
+    import { blockIfUnauthorized } from 'https://alestore-official.github.io/AleRegister/access.js';
+    blockIfUnauthorized();
+  </script>
   <script>
     const expirySelect = document.getElementById("expiry");
     const expiryInfo = document.getElementById("expiryInfo");
