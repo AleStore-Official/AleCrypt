@@ -23,12 +23,7 @@
     <p style="text-align: center; margin-top: 40px;">Created by <strong>AleStore-Official</strong></p>
   </div>
 
-  <script src="script.js"></script>
-  <script type="module">
-    import { blockIfUnauthorized } from 'https://alestore-official.github.io/AleRegister/access.js';
-    blockIfUnauthorized();
-  </script>
-  <script type="module">
+  <script>
     const SUPABASE_URL = 'https://hsyyrcbibohwvbuwxwok.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo';
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -90,6 +85,12 @@
 
     window.decrypt = decrypt;
   </script>
+
+  <script type="module">
+    import { blockIfUnauthorized } from 'https://alestore-official.github.io/AleRegister/access.js';
+    blockIfUnauthorized();
+  </script>
+
   <script src="https://alestore-official.github.io/AleCAPTCHA/control.js"></script>
 </body>
 </html>
