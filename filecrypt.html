@@ -5,6 +5,7 @@
   <title>AleCrypt – Encrypt</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
   <button id="themeToggle" title="Theme">🌙</button>
@@ -26,6 +27,7 @@
 
     <pre id="outputBox">📦 Your decryption key will appear here...</pre>
     <button id="copyBtn" style="display:none;">📋 Copy key</button>
+    <button id="nativeShareBtn" style="display:none;">🔗 Condividi chiave</button>
 
     <pre id="originalBox" style="display:none;">📝 Original message:</pre>
     <button id="copyMsgBtn" style="display:none;">📋 Copy message</button>
@@ -41,6 +43,10 @@
     blockIfUnauthorized();
   </script>
   <script>
+    const SUPABASE_URL = 'https://hsyyrcbibohwvbuwxwok.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     const expirySelect = document.getElementById("expiry");
     const expiryInfo = document.getElementById("expiryInfo");
     expirySelect.addEventListener("change", () => {
@@ -72,12 +78,13 @@
       return result;
     }
 
-    function encryptAndSave() {
+    async function encryptAndSave() {
       const msg = document.getElementById("textInput").value.trim();
       const output = document.getElementById("outputBox");
       const copyBtn = document.getElementById("copyBtn");
       const originalBox = document.getElementById("originalBox");
       const copyMsgBtn = document.getElementById("copyMsgBtn");
+      const nativeShareBtn = document.getElementById("nativeShareBtn");
 
       if (!msg) {
         alert("⚠️ Please enter a message before encrypting.");
@@ -91,8 +98,15 @@
       const expires = duration > 0 ? Date.now() + duration : null;
       const timestamp = new Date().toISOString();
 
-      const payload = { cipher, hash, expires, timestamp };
-      localStorage.setItem(key, JSON.stringify(payload));
+      const { data, error } = await supabase
+        .from('messages')
+        .insert([{ key, cipher, hash, expires, timestamp }]);
+
+      if (error) {
+        console.error('❌ Supabase error:', error);
+        alert("❌ Failed to save message to Supabase.");
+        return;
+      }
 
       output.textContent = "✅ Decryption key:\n\n" + key;
       copyBtn.style.display = "inline-block";
@@ -102,6 +116,25 @@
           copyBtn.innerText = "✅ Copied!";
           setTimeout(() => (copyBtn.innerText = "📋 Copy key"), 2000);
         });
+      };
+
+      nativeShareBtn.style.display = "inline-block";
+      nativeShareBtn.onclick = () => {
+        const shareText = `🔐 Decryption key:\n${key}\n\nVisit AleCrypt to decrypt:\nhttps://alestore-official.github.io/AleCrypt/`;
+        if (navigator.share) {
+          navigator.share({
+            title: 'AleCrypt Key',
+            text: shareText,
+            url: 'https://alestore-official.github.io/AleCrypt/'
+          }).then(() => {
+            console.log('✅ Chiave condivisa con successo');
+          }).catch((error) => {
+            console.error('❌ Errore nella condivisione:', error);
+            alert("❌ Impossibile aprire la finestra di condivisione.");
+          });
+        } else {
+          alert("⚠️ La condivisione nativa non è supportata su questo dispositivo.");
+        }
       };
 
       originalBox.style.display = "block";
