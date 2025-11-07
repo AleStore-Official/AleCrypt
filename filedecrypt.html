@@ -5,7 +5,6 @@
   <title>AleCrypt – Decrypt</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
   <button id="themeToggle" title="Theme">🌙</button>
@@ -23,11 +22,12 @@
     <p style="text-align: center; margin-top: 40px;">Created by <strong>AleStore-Official</strong></p>
   </div>
 
-  <script>
-    const SUPABASE_URL = 'https://hsyyrcbibohwvbuwxwok.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+  <script src="script.js"></script>
+  <script type="module">
+    import { blockIfUnauthorized } from 'https://alestore-official.github.io/AleRegister/access.js';
+    blockIfUnauthorized();
+  </script>
+  <script type="module">
     const toggle = document.getElementById("themeToggle");
     if (localStorage.getItem("alecrypt-theme") === "dark") {
       document.body.classList.add("dark");
@@ -40,34 +40,24 @@
       toggle.innerText = theme === "dark" ? "☀️" : "🌙";
     });
 
-    async function decrypt() {
+    function decrypt() {
       const key = document.getElementById("keyInput").value.trim();
       const resultBox = document.getElementById("resultBox");
       const copyBtn = document.getElementById("copyResultBtn");
 
-      if (!key) {
-        alert("⚠️ Please enter a key.");
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('key', key)
-        .single();
-
-      if (error || !data) {
-        resultBox.textContent = "❌ Message not found or invalid key.";
-        return;
-      }
-
-      if (data.expires && Date.now() > data.expires) {
-        resultBox.textContent = "⛔ This message has expired.";
+      if (!key || !localStorage.getItem(key)) {
+        alert("⚠️ Invalid or missing key.");
         return;
       }
 
       try {
-        const bytes = CryptoJS.AES.decrypt(data.cipher, key);
+        const payload = JSON.parse(localStorage.getItem(key));
+        if (payload.expires && Date.now() > payload.expires) {
+          resultBox.textContent = "⛔ This message has expired.";
+          return;
+        }
+
+        const bytes = CryptoJS.AES.decrypt(payload.cipher, key);
         const original = bytes.toString(CryptoJS.enc.Utf8);
         resultBox.textContent = "✅ Decrypted content:\n\n" + original;
         copyBtn.style.display = "inline-block";
@@ -85,12 +75,6 @@
 
     window.decrypt = decrypt;
   </script>
-
-  <script type="module">
-    import { blockIfUnauthorized } from 'https://alestore-official.github.io/AleRegister/access.js';
-    blockIfUnauthorized();
-  </script>
-
   <script src="https://alestore-official.github.io/AleCAPTCHA/control.js"></script>
 </body>
 </html>
