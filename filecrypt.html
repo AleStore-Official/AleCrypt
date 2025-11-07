@@ -5,7 +5,6 @@
   <title>AleCrypt – Encrypt</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
   <button id="themeToggle" title="Theme">🌙</button>
@@ -27,7 +26,6 @@
 
     <pre id="outputBox">📦 Your decryption key will appear here...</pre>
     <button id="copyBtn" style="display:none;">📋 Copy key</button>
-    <button id="nativeShareBtn" style="display:none;">🔗 Condividi chiave</button>
 
     <pre id="originalBox" style="display:none;">📝 Original message:</pre>
     <button id="copyMsgBtn" style="display:none;">📋 Copy message</button>
@@ -37,11 +35,12 @@
     <p style="text-align: center; margin-top: 40px;">Created by <strong>AleStore-Official</strong></p>
   </div>
 
+  <script src="script.js"></script>
+  <script type="module">
+    import { blockIfUnauthorized } from 'https://alestore-official.github.io/AleRegister/access.js';
+    blockIfUnauthorized();
+  </script>
   <script>
-    const SUPABASE_URL = 'https://hsyyrcbibohwvbuwxwok.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     const expirySelect = document.getElementById("expiry");
     const expiryInfo = document.getElementById("expiryInfo");
     expirySelect.addEventListener("change", () => {
@@ -73,13 +72,12 @@
       return result;
     }
 
-    async function encryptAndSave() {
+    function encryptAndSave() {
       const msg = document.getElementById("textInput").value.trim();
       const output = document.getElementById("outputBox");
       const copyBtn = document.getElementById("copyBtn");
       const originalBox = document.getElementById("originalBox");
       const copyMsgBtn = document.getElementById("copyMsgBtn");
-      const nativeShareBtn = document.getElementById("nativeShareBtn");
 
       if (!msg) {
         alert("⚠️ Please enter a message before encrypting.");
@@ -93,18 +91,12 @@
       const expires = duration > 0 ? Date.now() + duration : null;
       const timestamp = new Date().toISOString();
 
-      const { error } = await supabase
-        .from('messages')
-        .insert([{ key, cipher, hash, expires, timestamp }]);
-
-      if (error) {
-        console.error('❌ Supabase error:', error);
-        alert("❌ Failed to save message to Supabase.");
-        return;
-      }
+      const payload = { cipher, hash, expires, timestamp };
+      localStorage.setItem(key, JSON.stringify(payload));
 
       output.textContent = "✅ Decryption key:\n\n" + key;
       copyBtn.style.display = "inline-block";
+      copyBtn.innerText = "📋 Copy key";
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(key).then(() => {
           copyBtn.innerText = "✅ Copied!";
@@ -112,25 +104,10 @@
         });
       };
 
-      nativeShareBtn.style.display = "inline-block";
-      nativeShareBtn.onclick = () => {
-        const shareText = `🔐 Decryption key:\n${key}\n\nVisit AleCrypt to decrypt:\nhttps://alestore-official.github.io/AleCrypt/`;
-        if (navigator.share) {
-          navigator.share({
-            title: 'AleCrypt Key',
-            text: shareText,
-            url: 'https://alestore-official.github.io/AleCrypt/'
-          }).catch(() => {
-            alert("❌ Unable to share.");
-          });
-        } else {
-          alert("⚠️ Sharing not supported on this device.");
-        }
-      };
-
       originalBox.style.display = "block";
       originalBox.textContent = "📝 Original message:\n\n" + msg;
       copyMsgBtn.style.display = "inline-block";
+      copyMsgBtn.innerText = "📋 Copy message";
       copyMsgBtn.onclick = () => {
         navigator.clipboard.writeText(msg).then(() => {
           copyMsgBtn.innerText = "✅ Copied!";
@@ -141,5 +118,6 @@
 
     window.encryptAndSave = encryptAndSave;
   </script>
+  <script src="https://alestore-official.github.io/AleCAPTCHA/control.js"></script>
 </body>
 </html>
