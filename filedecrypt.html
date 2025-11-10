@@ -3,11 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <title>AleCrypt – Decrypt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>
+    body {
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    body.dark {
+      background: #121212;
+      color: #f0f0f0;
+    }
+    #themeToggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <button id="themeToggle" title="Theme">🌙</button>
+  <button id="themeToggle" title="Toggle theme">🌙</button>
+
   <div class="centered">
     <h2>🔓 Decrypt a Message</h2>
 
