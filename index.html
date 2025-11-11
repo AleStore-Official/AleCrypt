@@ -15,31 +15,6 @@
       page_path: '/AleCrypt'
     });
   </script>
-  <style>
-    body {
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    body.dark {
-      background: #121212;
-      color: #f0f0f0;
-    }
-    #themeToggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      font-size: 20px;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-    .welcome {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      font-size: 14px;
-      color: #444;
-    }
-  </style>
 </head>
 <body>
   <button id="themeToggle" title="Toggle theme">🌙</button>
@@ -53,7 +28,7 @@
   </div>
 
   <div class="signature">
-    <p style="text-align: center; margin-top: 40px;">Created by <strong>AleStore-Official</strong></p>
+    <p>Created by <strong>AleStore-Official</strong></p>
   </div>
 
   <script src="script.js"></script>
@@ -65,11 +40,10 @@
 
     const supabase = createClient(
       'https://hsyyrcbibohwvbuwxwok.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
     );
 
     const welcome = document.getElementById("welcome");
-
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       location.href = "https://alestore-official.github.io/AleLogin";
@@ -84,7 +58,7 @@
   </script>
   <script>
     const toggle = document.getElementById("themeToggle");
-    const currentTheme = localStorage.getItem("alecrypt-theme");
+    const currentTheme = localStorage.getItem("alestore-theme");
     if (currentTheme === "dark") {
       document.body.classList.add("dark");
       toggle.textContent = "☀️";
@@ -93,7 +67,7 @@
     toggle.onclick = () => {
       document.body.classList.toggle("dark");
       const theme = document.body.classList.contains("dark") ? "dark" : "light";
-      localStorage.setItem("alecrypt-theme", theme);
+      localStorage.setItem("alestore-theme", theme);
       toggle.textContent = theme === "dark" ? "☀️" : "🌙";
     };
   </script>
