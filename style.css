@@ -10,7 +10,7 @@ body {
   font-family: var(--font-main);
   background: linear-gradient(270deg, #fbc2eb, #a6c1ee, #d4fc79);
   background-size: 600% 600%;
-  animation: gradientFlow 60s ease infinite;
+  animation: gradientFlow 60s ease infinite, fadeInBody 1s ease-in-out;
   color: #222;
   min-height: 100vh;
   caret-color: currentColor;
@@ -28,7 +28,6 @@ body.dark {
   color: #eee;
 }
 
-/* Contenitore principale */
 .centered {
   max-width: 680px;
   margin: 3em auto;
@@ -38,13 +37,13 @@ body.dark {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(6px);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  animation: fadeInUp 0.8s ease-out;
 }
 
 body.dark .centered {
   background: rgba(20, 20, 20, 0.9);
 }
 
-/* Input, select, textarea */
 textarea, input, select {
   width: 90%;
   padding: 12px;
@@ -65,7 +64,6 @@ body.dark select {
   box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
 }
 
-/* Pulsanti liquidi glass */
 button,
 .option-btn {
   background: rgba(255, 255, 255, 0.15);
@@ -108,7 +106,6 @@ body.dark .option-btn:hover {
   color: #fff;
 }
 
-/* Pulsante tema */
 #themeToggle {
   position: fixed;
   top: 16px;
@@ -134,7 +131,6 @@ body.dark #themeToggle {
   color: #fff;
 }
 
-/* Output criptato, decifrato */
 pre {
   background: #f4f4f4;
   padding: 1em;
@@ -149,9 +145,56 @@ body.dark pre {
   color: #fff;
 }
 
-/* Info scadenza e messaggi */
 #expiryInfo, #expiryData {
   font-size: 0.95em;
   font-weight: bold;
   margin-top: 0.5em;
+}
+
+.signature {
+  text-align: center;
+  margin-top: 20px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  display: inline-block;
+  padding: 6px 12px;
+}
+
+.signature p {
+  color: #000;
+  font-weight: bold;
+  text-shadow: 0 0 6px rgba(255,255,255,0.8);
+}
+
+body.dark .signature {
+  background: rgba(0,0,0,0.4);
+}
+
+body.dark .signature p {
+  color: #fff;
+  text-shadow: 0 0 6px rgba(0,0,0,0.8);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInBody {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .centered {
+    margin: 1.5em;
+    padding: 1.5em;
+  }
+  textarea, input, select {
+    width: 100%;
+  }
+  button {
+    width: 100%;
+  }
 }
