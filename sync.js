@@ -1,5 +1,4 @@
 window.syncAleCrypt = async function () {
-  // Ensure Supabase is available
   if (typeof supabase === "undefined" || !supabase.createClient) {
     console.warn("Supabase not initialized.");
     return;
@@ -16,62 +15,58 @@ window.syncAleCrypt = async function () {
     return;
   }
 
-  // Blocks
-  try {
-    const { data: blocks } = await client
-      .from("blocchi")
-      .select("*")
-      .eq("id", userId)
-      .limit(1);
-
-    if (blocks?.length) {
-      localStorage.setItem(`blocked:${userId}`, JSON.stringify(blocks[0]));
-    } else {
-      localStorage.removeItem(`blocked:${userId}`);
-    }
-  } catch (err) {
-    console.error("Error fetching blocks:", err);
-  }
-
-  // Messages
-  try {
-    const { data: messages } = await client
-      .from("messaggi")
-      .select("*")
-      .eq("user_id", userId)
-      .order("data", { ascending: false })
-      .limit(10);
-
-    if (messages) {
-      for (const msg of messages) {
-        const key = `🔑${msg.id}`;
-        const payload = {
-          cipher: msg.contenuto,
-          hash: msg.id,
-          expires: msg.scadenza,
-          timestamp: msg.data
-        };
-        localStorage.setItem(key, JSON.stringify(payload));
+  async function syncBlocks() {
+    try {
+      const { data } = await client.from("blocchi").select("*").eq("id", userId).limit(1);
+      if (data?.length) {
+        localStorage.setItem(`blocked:${userId}`, JSON.stringify(data[0]));
+      } else {
+        localStorage.removeItem(`blocked:${userId}`);
       }
+    } catch (err) {
+      console.error("Error fetching blocks:", err);
     }
-  } catch (err) {
-    console.error("Error fetching messages:", err);
   }
 
-  // User profile
-  try {
-    const { data: userData } = await client
-      .from("utenti")
-      .select("*")
-      .eq("id", userId)
-      .limit(1);
+  async function syncMessages() {
+    try {
+      const { data } = await client
+        .from("messaggi")
+        .select("*")
+        .eq("user_id", userId)
+        .order("data", { ascending: false })
+        .limit(10);
 
-    if (userData?.length) {
-      const user = userData[0];
-      localStorage.setItem(`user:${userId}`, JSON.stringify(user));
-      localStorage.setItem("userStatus", user.stato);
+      if (data) {
+        for (const msg of data) {
+          if (!msg.id || !msg.contenuto) continue;
+          const key = `🔑${msg.id}`;
+          const payload = {
+            cipher: msg.contenuto,
+            hash: msg.id,
+            expires: msg.scadenza || null,
+            timestamp: msg.data || new Date().toISOString()
+          };
+          localStorage.setItem(key, JSON.stringify(payload));
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching messages:", err);
     }
-  } catch (err) {
-    console.error("Error fetching user profile:", err);
   }
+
+  async function syncUserProfile() {
+    try {
+      const { data } = await client.from("utenti").select("*").eq("id", userId).limit(1);
+      if (data?.length) {
+        const user = data[0];
+        localStorage.setItem(`user:${userId}`, JSON.stringify(user));
+        if (user.stato) localStorage.setItem("userStatus", user.stato);
+      }
+    } catch (err) {
+      console.error("Error fetching user profile:", err);
+    }
+  }
+
+  await Promise.all([syncBlocks(), syncMessages(), syncUserProfile()]);
 };
