@@ -1,71 +1,77 @@
 window.syncAleCrypt = async function () {
-  // 🔒 Aspetta che Supabase sia disponibile
+  // Ensure Supabase is available
   if (typeof supabase === "undefined" || !supabase.createClient) {
-    console.warn("⚠️ Supabase non inizializzato.");
+    console.warn("Supabase not initialized.");
     return;
   }
 
   const client = supabase.createClient(
-    'https://anfgsrtcbpvaihrtqnlv.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFuZmdzcnRjYnB2YWlocnRxbmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NTI1NTIsImV4cCI6MjA2NzMyODU1Mn0.4tNAZ0RXc-zFFCNT8Wm6Bdo3TkhLc0Up90KxAdUhYss'
+    "https://anfgsrtcbpvaihrtqnlv.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   );
 
   const userId = localStorage.getItem("userId");
-  if (!userId) return;
+  if (!userId) {
+    console.warn("No userId found in localStorage.");
+    return;
+  }
 
-  // 🧱 Blocchi
+  // Blocks
   try {
-    const { data: blocchi } = await client
+    const { data: blocks } = await client
       .from("blocchi")
       .select("*")
       .eq("id", userId)
       .limit(1);
-    if (blocchi?.length) {
-      localStorage.setItem("bloccati:" + userId, JSON.stringify(blocchi[0]));
+
+    if (blocks?.length) {
+      localStorage.setItem(`blocked:${userId}`, JSON.stringify(blocks[0]));
     } else {
-      localStorage.removeItem("bloccati:" + userId);
+      localStorage.removeItem(`blocked:${userId}`);
     }
-  } catch (e) {
-    console.warn("❌ Errore blocchi:", e);
+  } catch (err) {
+    console.error("Error fetching blocks:", err);
   }
 
-  // 📬 Messaggi
+  // Messages
   try {
-    const { data: messaggi } = await client
+    const { data: messages } = await client
       .from("messaggi")
       .select("*")
       .eq("user_id", userId)
       .order("data", { ascending: false })
       .limit(10);
-    if (messaggi) {
-      for (const m of messaggi) {
-        const chiave = "🔑" + m.id;
+
+    if (messages) {
+      for (const msg of messages) {
+        const key = `🔑${msg.id}`;
         const payload = {
-          cipher: m.contenuto,
-          hash: m.id,
-          expires: m.scadenza,
-          timestamp: m.data
+          cipher: msg.contenuto,
+          hash: msg.id,
+          expires: msg.scadenza,
+          timestamp: msg.data
         };
-        localStorage.setItem(chiave, JSON.stringify(payload));
+        localStorage.setItem(key, JSON.stringify(payload));
       }
     }
-  } catch (e) {
-    console.warn("⚠️ Errore messaggi:", e);
+  } catch (err) {
+    console.error("Error fetching messages:", err);
   }
 
-  // 👥 Utente corrente
+  // User profile
   try {
-    const { data } = await client
+    const { data: userData } = await client
       .from("utenti")
       .select("*")
       .eq("id", userId)
       .limit(1);
-    if (data?.length) {
-      const u = data[0];
-      localStorage.setItem("utenti:" + userId, JSON.stringify(u));
-      localStorage.setItem("userStatus", u.stato);
+
+    if (userData?.length) {
+      const user = userData[0];
+      localStorage.setItem(`user:${userId}`, JSON.stringify(user));
+      localStorage.setItem("userStatus", user.stato);
     }
-  } catch (e) {
-    console.warn("⚠️ Errore utente:", e);
+  } catch (err) {
+    console.error("Error fetching user profile:", err);
   }
 };
