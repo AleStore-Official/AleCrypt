@@ -26,11 +26,6 @@
 
   <script type="module">
     import { blockIfUnauthorized } from 'https://alestore-official.github.io/AleRegister/access.js';
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-    const supabaseUrl = "https://hsyyrcbibohwvbuwxwok.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo";
-    window.supabase = createClient(supabaseUrl, supabaseKey);
 
     const verified = localStorage.getItem("access_verified") === "true";
     const registered = localStorage.getItem("user_verified") === "true";
@@ -53,41 +48,25 @@
       toggle.textContent = theme === "dark" ? "☀️" : "🌙";
     };
 
-    async function decrypt() {
+    function decrypt() {
       const key = document.getElementById("keyInput").value.trim();
       const resultBox = document.getElementById("resultBox");
       const copyBtn = document.getElementById("copyResultBtn");
 
-      if (!key) {
+      if (!key || !localStorage.getItem(key)) {
         alert("⚠️ Invalid or missing key.");
         return;
       }
 
       try {
-        const { data, error } = await supabase
-          .from("messages")
-          .select("cipher, expires")
-          .eq("key", key)
-          .single();
-
-        if (error || !data) {
-          resultBox.textContent = "❌ No message found for this key.";
-          return;
-        }
-
-        if (data.expires && Date.now() > data.expires) {
+        const payload = JSON.parse(localStorage.getItem(key));
+        if (payload.expires && Date.now() > payload.expires) {
           resultBox.textContent = "⛔ This message has expired.";
           return;
         }
 
-        const bytes = CryptoJS.AES.decrypt(data.cipher, key);
+        const bytes = CryptoJS.AES.decrypt(payload.cipher, key);
         const original = bytes.toString(CryptoJS.enc.Utf8);
-
-        if (!original) {
-          resultBox.textContent = "❌ Error during decryption.";
-          return;
-        }
-
         resultBox.textContent = "✅ Decrypted content:\n\n" + original;
         copyBtn.style.display = "inline-block";
         copyBtn.innerText = "📋 Copy result";
