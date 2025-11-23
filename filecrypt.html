@@ -40,6 +40,12 @@
   <script src="script.js"></script>
   <script type="module">
     import { blockIfUnauthorized } from 'https://alestore-official.github.io/AleRegister/access.js';
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js';
+
+    const supabase = createClient(
+      'https://hsyyrcbibohwvbuwxwok.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo'
+    );
 
     const verified = localStorage.getItem("access_verified") === "true";
     const registered = localStorage.getItem("user_verified") === "true";
@@ -47,30 +53,6 @@
     if (!verified || !registered) {
       blockIfUnauthorized();
     }
-  </script>
-  <script>
-    const expirySelect = document.getElementById("expiry");
-    const expiryInfo = document.getElementById("expiryInfo");
-    expirySelect.addEventListener("change", () => {
-      const duration = parseInt(expirySelect.value);
-      expiryInfo.textContent = duration === 0
-        ? "⏱️ Estimated expiry: none"
-        : "⏱️ Estimated expiry: " + new Date(Date.now() + duration).toLocaleString();
-    });
-    expirySelect.dispatchEvent(new Event("change"));
-
-    const toggle = document.getElementById("themeToggle");
-    const currentTheme = localStorage.getItem("alestore-theme");
-    if (currentTheme === "dark") {
-      document.body.classList.add("dark");
-      toggle.textContent = "☀️";
-    }
-    toggle.onclick = () => {
-      document.body.classList.toggle("dark");
-      const theme = document.body.classList.contains("dark") ? "dark" : "light";
-      localStorage.setItem("alestore-theme", theme);
-      toggle.textContent = theme === "dark" ? "☀️" : "🌙";
-    };
 
     function generateCustomKey(length = 64) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:,.<>?';
@@ -81,7 +63,12 @@
       return result;
     }
 
-    function encryptAndSave() {
+    function isValidMessage(msg) {
+      const forbidden = ["spam", "bullying", "hate", "illegal"];
+      return !forbidden.some(word => msg.toLowerCase().includes(word));
+    }
+
+    async function encryptAndSave() {
       const msg = document.getElementById("textInput").value.trim();
       const output = document.getElementById("outputBox");
       const copyBtn = document.getElementById("copyBtn");
@@ -92,16 +79,25 @@
         alert("⚠️ Please enter a message before encrypting.");
         return;
       }
+      if (!isValidMessage(msg)) {
+        alert("❌ Message not allowed.");
+        return;
+      }
 
-      const duration = parseInt(expirySelect.value);
+      const duration = parseInt(document.getElementById("expiry").value);
       const key = "🔑" + generateCustomKey();
       const cipher = CryptoJS.AES.encrypt(msg, key).toString();
-      const hash = CryptoJS.SHA256(cipher).toString();
       const expires = duration > 0 ? Date.now() + duration : null;
       const timestamp = new Date().toISOString();
 
-      const payload = { cipher, hash, expires, timestamp };
-      localStorage.setItem(key, JSON.stringify(payload));
+      const { error } = await supabase
+        .from("encrypted_messages")
+        .insert([{ key, cipher, expires, timestamp }]);
+
+      if (error) {
+        alert("❌ Error saving message: " + error.message);
+        return;
+      }
 
       output.textContent = "✅ Decryption key:\n\n" + key;
       copyBtn.style.display = "inline-block";
@@ -126,6 +122,30 @@
     }
 
     window.encryptAndSave = encryptAndSave;
+  </script>
+  <script>
+    const expirySelect = document.getElementById("expiry");
+    const expiryInfo = document.getElementById("expiryInfo");
+    expirySelect.addEventListener("change", () => {
+      const duration = parseInt(expirySelect.value);
+      expiryInfo.textContent = duration === 0
+        ? "⏱️ Estimated expiry: none"
+        : "⏱️ Estimated expiry: " + new Date(Date.now() + duration).toLocaleString();
+    });
+    expirySelect.dispatchEvent(new Event("change"));
+
+    const toggle = document.getElementById("themeToggle");
+    const currentTheme = localStorage.getItem("alestore-theme");
+    if (currentTheme === "dark") {
+      document.body.classList.add("dark");
+      toggle.textContent = "☀️";
+    }
+    toggle.onclick = () => {
+      document.body.classList.toggle("dark");
+      const theme = document.body.classList.contains("dark") ? "dark" : "light";
+      localStorage.setItem("alestore-theme", theme);
+      toggle.textContent = theme === "dark" ? "☀️" : "🌙";
+    };
   </script>
   <script src="https://alestore-official.github.io/AleCAPTCHA/control.js"></script>
 </body>
