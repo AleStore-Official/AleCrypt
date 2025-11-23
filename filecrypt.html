@@ -27,10 +27,7 @@
     <button onclick="encryptAndSave()">🔐 Encrypt</button>
 
     <pre id="outputBox">📦 Your decryption key will appear here...</pre>
-    <button id="copyBtn" style="display:none;">📋 Copy key</button>
-
-    <pre id="originalBox" style="display:none;">📝 Original message:</pre>
-    <button id="copyMsgBtn" style="display:none;">📋 Copy message</button>
+    <button id="shareBtn" style="display:none;">🔗 Share</button>
   </div>
 
   <div class="signature">
@@ -44,7 +41,7 @@
 
     const supabase = createClient(
       'https://hsyyrcbibohwvbuwxwok.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo'
     );
 
     const verified = localStorage.getItem("access_verified") === "true";
@@ -63,24 +60,13 @@
       return result;
     }
 
-    function isValidMessage(msg) {
-      const forbidden = ["spam", "bullying", "hate", "illegal"];
-      return !forbidden.some(word => msg.toLowerCase().includes(word));
-    }
-
     async function encryptAndSave() {
       const msg = document.getElementById("textInput").value.trim();
       const output = document.getElementById("outputBox");
-      const copyBtn = document.getElementById("copyBtn");
-      const originalBox = document.getElementById("originalBox");
-      const copyMsgBtn = document.getElementById("copyMsgBtn");
+      const shareBtn = document.getElementById("shareBtn");
 
       if (!msg) {
         alert("⚠️ Please enter a message before encrypting.");
-        return;
-      }
-      if (!isValidMessage(msg)) {
-        alert("❌ Message not allowed.");
         return;
       }
 
@@ -100,23 +86,14 @@
       }
 
       output.textContent = "✅ Decryption key:\n\n" + key;
-      copyBtn.style.display = "inline-block";
-      copyBtn.innerText = "📋 Copy key";
-      copyBtn.onclick = () => {
-        navigator.clipboard.writeText(key).then(() => {
-          copyBtn.innerText = "✅ Copied!";
-          setTimeout(() => (copyBtn.innerText = "📋 Copy key"), 2000);
-        });
-      };
 
-      originalBox.style.display = "block";
-      originalBox.textContent = "📝 Original message:\n\n" + msg;
-      copyMsgBtn.style.display = "inline-block";
-      copyMsgBtn.innerText = "📋 Copy message";
-      copyMsgBtn.onclick = () => {
-        navigator.clipboard.writeText(msg).then(() => {
-          copyMsgBtn.innerText = "✅ Copied!";
-          setTimeout(() => (copyMsgBtn.innerText = "📋 Copy message"), 2000);
+      shareBtn.style.display = "inline-block";
+      shareBtn.innerText = "🔗 Share";
+      shareBtn.onclick = () => {
+        const shareText = `🔑 Decryption key: ${key}\n\nVisit https://alestore-official.github.io/AleCrypt to decrypt the message.`;
+        navigator.clipboard.writeText(shareText).then(() => {
+          shareBtn.innerText = "✅ Shared!";
+          setTimeout(() => (shareBtn.innerText = "🔗 Share"), 2000);
         });
       };
     }
