@@ -15,11 +15,15 @@
     <textarea id="textInput" placeholder="Write your message..."></textarea>
 
     <select id="expiry">
-      <option value="0">♾️ Never</option>
+      <option value="600000">10 minutes</option>
+      <option value="1800000">30 minutes</option>
       <option value="3600000">1 hour</option>
-      <option value="86400000">24 hours</option>
+      <option value="21600000">6 hours</option>
+      <option value="43200000">12 hours</option>
+      <option value="86400000">1 day</option>
+      <option value="259200000">3 days</option>
       <option value="604800000">7 days</option>
-      <option value="2592000000">30 days</option>
+      <option value="864000000">10 days</option>
     </select>
 
     <p id="expiryInfo">⏱️ Estimated expiry: none</p>
@@ -73,7 +77,7 @@
       const duration = parseInt(document.getElementById("expiry").value);
       const key = "🔑" + generateCustomKey();
       const cipher = CryptoJS.AES.encrypt(msg, key).toString();
-      const expires = duration > 0 ? Date.now() + duration : null;
+      const expires = Date.now() + duration;
       const timestamp = new Date().toISOString();
 
       const { error } = await supabase
@@ -105,9 +109,7 @@
     const expiryInfo = document.getElementById("expiryInfo");
     expirySelect.addEventListener("change", () => {
       const duration = parseInt(expirySelect.value);
-      expiryInfo.textContent = duration === 0
-        ? "⏱️ Estimated expiry: none"
-        : "⏱️ Estimated expiry: " + new Date(Date.now() + duration).toLocaleString();
+      expiryInfo.textContent = "⏱️ Estimated expiry: " + new Date(Date.now() + duration).toLocaleString();
     });
     expirySelect.dispatchEvent(new Event("change"));
 
