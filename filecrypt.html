@@ -93,12 +93,22 @@
 
       shareBtn.style.display = "inline-block";
       shareBtn.innerText = "🔗 Share";
-      shareBtn.onclick = () => {
+      shareBtn.onclick = async () => {
         const shareText = `🔑 Decryption key: ${key}\n\nVisit https://alestore-official.github.io/AleCrypt to decrypt the message.`;
-        navigator.clipboard.writeText(shareText).then(() => {
-          shareBtn.innerText = "✅ Shared!";
-          setTimeout(() => (shareBtn.innerText = "🔗 Share"), 2000);
-        });
+
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: "AleCrypt Decryption Key",
+              text: shareText,
+              url: "https://alestore-official.github.io/AleCrypt"
+            });
+          } catch (err) {
+            alert("❌ Sharing failed: " + err);
+          }
+        } else {
+          alert("⚠️ Sharing not supported on this browser.");
+        }
       };
     }
 
