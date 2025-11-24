@@ -47,7 +47,7 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXlyY2JpYm9od3ZidXd4d29rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNjE0MDcsImV4cCI6MjA3NjYzNzQwN30.2KsFsGYjwf_cA7Z9oglVthiaE1_jWYuQ6HMMm5UXsyo"
     );
 
-    function generateCustomKey(length = 64) {
+    function generateCustomKey(length = 256) {
       const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:,.<>?";
       let result = "";
       for (let i = 0; i < length; i++) {
@@ -67,7 +67,7 @@
       }
 
       const duration = parseInt(document.getElementById("expiry").value);
-      const key = "🔒🔑" + generateCustomKey(64);
+      const key = "🔒🔑" + generateCustomKey(256);
       const cipher = CryptoJS.AES.encrypt(msg, key).toString();
       const expires = Date.now() + duration;
       const timestamp = new Date().toISOString();
