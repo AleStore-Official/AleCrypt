@@ -31,16 +31,6 @@
   </div>
 
   <script src="script.js"></script>
-  <script type="module">
-    import { blockIfUnauthorized } from 'https://alestore-official.github.io/AleRegister/access.js';
-
-    const verified = localStorage.getItem("access_verified") === "true";
-    const registered = localStorage.getItem("user_verified") === "true";
-
-    if (!verified || !registered) {
-      blockIfUnauthorized();
-    }
-  </script>
   <script>
     const toggle = document.getElementById("themeToggle");
     const currentTheme = localStorage.getItem("alestore-theme");
@@ -57,5 +47,9 @@
     };
   </script>
   <script src="https://alestore-official.github.io/AleCAPTCHA/control.js"></script>
+  <script type="module">
+    import { blockIfUnauthorized } from "https://alestore-official.github.io/AleRegister/access.js";
+    blockIfUnauthorized();
+  </script>
 </body>
 </html>
