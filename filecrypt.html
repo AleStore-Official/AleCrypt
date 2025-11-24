@@ -67,7 +67,7 @@
       }
 
       const duration = parseInt(document.getElementById("expiry").value);
-      const key = "🔒🔑" + generateCustomKey(256);
+      const key = "🔑" + generateCustomKey(256);
       const cipher = CryptoJS.AES.encrypt(msg, key).toString();
       const expires = Date.now() + duration;
       const timestamp = new Date().toISOString();
