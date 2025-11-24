@@ -67,7 +67,7 @@
       }
 
       const duration = parseInt(document.getElementById("expiry").value);
-      const key = "🔑" + generateCustomKey();
+      const key = "🔒🔑" + generateCustomKey(64);
       const cipher = CryptoJS.AES.encrypt(msg, key).toString();
       const expires = Date.now() + duration;
       const timestamp = new Date().toISOString();
@@ -87,15 +87,15 @@
       shareBtn.innerText = "🔗 Share";
       shareBtn.onclick = async () => {
         const shareText = 
-`🔐 Hai ricevuto un messaggio cifrato con AleCrypt!
+`🔐 You have received an encrypted message with AleCrypt!
 
-Per leggerlo ti serve questa chiave di decrittazione:
+To read it you need this decryption key:
 👉 ${key}
 
-Apri il sito ufficiale AleCrypt per decifrare il contenuto:
+Open the official AleCrypt site to decrypt the content:
 🌐 https://alestore-official.github.io/AleCrypt
 
-⏳ Ricorda: la chiave scade secondo il tempo impostato.`;
+⏳ Reminder: the key will expire according to the selected time.`;
 
         if (navigator.share) {
           try {
